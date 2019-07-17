@@ -8,9 +8,9 @@ services:
       - 3306:3306
     environment:
       MYSQL_USER: root
-      MYSQL_ROOT_PASSWORD: devdojo
+      MYSQL_ROOT_PASSWORD: root
     volumes:
-      - microservices_devdojo:/var/lib/mysql
+      - microservices:/var/lib/mysql
 
 volumes:
-  microservices_devdojo:
+  microservices:

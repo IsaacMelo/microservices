@@ -17,10 +17,10 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("v1/admin/course")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CourseController {
-	private final CourseService courseService;
+    private final CourseService courseService;
 
-	@GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Iterable<Course>> list(Pageable pageable) {
-		return new ResponseEntity<>(courseService.list(pageable), HttpStatus.OK);
-	}
+    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Iterable<Course>> list(Pageable pageable) {
+        return new ResponseEntity<>(courseService.list(pageable), HttpStatus.OK);
+    }
 }
