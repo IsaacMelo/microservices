@@ -9,7 +9,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -18,15 +19,19 @@ import com.nimbusds.jwt.SignedJWT;
 import br.com.microservices.core.property.JwtConfiguration;
 import br.com.microservices.security.token.converter.TokenConverter;
 import br.com.microservices.security.util.SecurityContextUtil;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class JwtTokenAuthorizationFilter extends OncePerRequestFilter {
-    protected final JwtConfiguration jwtConfiguration;
-    protected final TokenConverter tokenConverter;
+	private final Logger log = LoggerFactory.getLogger(JwtTokenAuthorizationFilter.class);
+	
+	protected final JwtConfiguration jwtConfiguration;
+	protected final TokenConverter tokenConverter;
 
-    @Override
+    public JwtTokenAuthorizationFilter(JwtConfiguration jwtConfiguration, TokenConverter tokenConverter) {
+		this.jwtConfiguration = jwtConfiguration;
+		this.tokenConverter = tokenConverter;
+	}
+
+	@Override
     @SuppressWarnings("Duplicates")
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException {
         String header = request.getHeader(jwtConfiguration.getHeader().getName());
@@ -43,16 +48,28 @@ public class JwtTokenAuthorizationFilter extends OncePerRequestFilter {
         chain.doFilter(request, response);
     }
 
-    @SneakyThrows
     private SignedJWT decryptValidating(String encryptedToken) {
-        String signedToken = tokenConverter.decryptToken(encryptedToken);
-        tokenConverter.validateTokenSignature(signedToken);
-        return SignedJWT.parse(signedToken);
+        String signedToken;
+		try {
+			signedToken = tokenConverter.decryptToken(encryptedToken);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RuntimeException(e);
+		}
+        
+		return validate(signedToken);
     }
 
-    @SneakyThrows
     private SignedJWT validate(String signedToken) {
-        tokenConverter.validateTokenSignature(signedToken);
-        return SignedJWT.parse(signedToken);
+		SignedJWT parse = null;
+    	try {
+			tokenConverter.validateTokenSignature(signedToken);
+			parse = SignedJWT.parse(signedToken);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw new RuntimeException(e);
+		}
+
+        return parse;
     }
 }

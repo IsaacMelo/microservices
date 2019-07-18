@@ -11,13 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.microservices.core.model.Course;
 import br.com.microservices.course.endpoint.service.CourseService;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("v1/admin/course")
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CourseController {
-    private final CourseService courseService;
+	@Autowired
+    private CourseService courseService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Iterable<Course>> list(Pageable pageable) {

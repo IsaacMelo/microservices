@@ -4,6 +4,8 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,10 +15,9 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 import br.com.microservices.core.model.ApplicationUser;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class SecurityContextUtil {
+	private final static Logger log = LoggerFactory.getLogger(SecurityContextUtil.class);
     private SecurityContextUtil() {
 
     }
@@ -29,12 +30,12 @@ public class SecurityContextUtil {
                 throw new JOSEException("Username missing from JWT");
 
             List<String> authorities = claims.getStringListClaim("authorities");
-            ApplicationUser applicationUser = ApplicationUser
-                    .builder()
-                    .id(claims.getLongClaim("userId"))
-                    .username(username)
-                    .role(String.join(",", authorities))
-                    .build();
+
+            ApplicationUser applicationUser = new ApplicationUser();
+            applicationUser.setId(claims.getLongClaim("userId"));
+            applicationUser.setUsername(username);
+            applicationUser.setRole(String.join(",", authorities));
+            
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(applicationUser, null, createAuthorities(authorities));
             auth.setDetails(signedJWT.serialize());
 

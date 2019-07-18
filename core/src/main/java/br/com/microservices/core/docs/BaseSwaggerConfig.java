@@ -25,8 +25,8 @@ public class BaseSwaggerConfig {
 	private ApiInfo metaData() {
 		return new ApiInfoBuilder().title("Another Awesome course from DevDojo <3 Spring Boot Microservices")
 				.description("Everybody is a Jedi now").version("1.0")
-				.contact(new Contact("William Suane as the Jedi Master", "http://devdojo.academy",
-						"william.suane@devdojo.academy"))
-				.license("Private stuff bro, belongs to DevDojo").licenseUrl("http://devdojo.academy").build();
+				.contact(new Contact("Administrator", "http://microservices",
+						"administrator@gmail.com"))
+				.license("Open").licenseUrl("http://microservices").build();
 	}
 }

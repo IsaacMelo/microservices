@@ -4,10 +4,13 @@ import static java.util.stream.Collectors.toList;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Date;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,17 +34,14 @@ import com.nimbusds.jwt.SignedJWT;
 
 import br.com.microservices.core.model.ApplicationUser;
 import br.com.microservices.core.property.JwtConfiguration;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Slf4j
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TokenCreator {
-    private final JwtConfiguration jwtConfiguration;
+	private final Logger log = LoggerFactory.getLogger(TokenCreator.class);
+	
+	@Autowired
+    private JwtConfiguration jwtConfiguration;
 
-    @SneakyThrows
     public SignedJWT createSignedJWT(Authentication auth) {
         log.info("Starting to create the signed JWT");
 
@@ -64,7 +64,12 @@ public class TokenCreator {
 
         RSASSASigner signer = new RSASSASigner(rsaKeys.getPrivate());
 
-        signedJWT.sign(signer);
+        try {
+			signedJWT.sign(signer);
+		} catch (JOSEException e) {
+			log.error(e.getMessage());
+			throw new RuntimeException(e);
+		}
 
         log.info("Serialized token '{}'", signedJWT.serialize());
 
@@ -88,11 +93,16 @@ public class TokenCreator {
                 .build();
     }
 
-    @SneakyThrows
     private KeyPair generateKeyPair() {
         log.info("Generating RSA 2048 bits Keys");
 
-        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
+        KeyPairGenerator generator = null;
+		try {
+			generator = KeyPairGenerator.getInstance("RSA");
+		} catch (NoSuchAlgorithmException e) {
+			log.error(e.getMessage());
+			throw new RuntimeException(e);
+		}
 
         generator.initialize(2048);
 

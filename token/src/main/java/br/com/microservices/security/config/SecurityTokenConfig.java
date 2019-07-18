@@ -4,20 +4,21 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.web.cors.CorsConfiguration;
 
 import br.com.microservices.core.property.JwtConfiguration;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
-    protected final JwtConfiguration jwtConfiguration;
+	protected final JwtConfiguration jwtConfiguration;
 
-    @Override
+    public SecurityTokenConfig(JwtConfiguration jwtConfiguration) {
+    	this.jwtConfiguration = jwtConfiguration;
+	}
+
+	@Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
