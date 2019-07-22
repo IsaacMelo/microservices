@@ -1,0 +1,16 @@
+spring:
+  cloud:
+    config:
+      uri: ${SRV_SERVER_CONFIG}/config
+      label: latest
+      profile: production
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
+     
+  security:
+    enabled: false
+
