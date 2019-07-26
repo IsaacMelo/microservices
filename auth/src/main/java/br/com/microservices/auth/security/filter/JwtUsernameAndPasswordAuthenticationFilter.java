@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
 
-import br.com.microservices.core.model.ApplicationUser;
+import br.com.microservices.core.model.auth.User;
 import br.com.microservices.core.property.JwtConfiguration;
 import br.com.microservices.security.token.creator.TokenCreator;
 
@@ -38,22 +38,22 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
 		log.debug("Attempting authentication. . .");
-		ApplicationUser applicationUser = null;
+		User user = null;
 		try {
-			applicationUser = new ObjectMapper().readValue(request.getInputStream(), ApplicationUser.class);
+			user = new ObjectMapper().readValue(request.getInputStream(), User.class);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
 
-		if (applicationUser == null)
+		if (user == null)
 			throw new UsernameNotFoundException("Unable to retrieve the username or password");
 
-		log.debug("Creating the authentication object for the user '{}' and calling UserDetailServiceImpl loadUserByUsername", applicationUser.getUsername());
+		log.debug("Creating the authentication object for the user '{}' and calling UserDetailServiceImpl loadUserByUsername", user.getUsername());
 
 		UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-				applicationUser.getUsername(), applicationUser.getPassword(), emptyList());
+				user.getUsername(), user.getPassword(), emptyList());
 
-		usernamePasswordAuthenticationToken.setDetails(applicationUser);
+		usernamePasswordAuthenticationToken.setDetails(user);
 
 		return authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 	}

@@ -26,7 +26,7 @@ spring:
     config:
       server:
         jdbc:
-          sql: select property, value from properties where application=? and profile=? and label=?
+          sql: select property, value from tb_properties where application=? and profile=? and label=?
         prefix: /config
   jmx:
     enabled: false

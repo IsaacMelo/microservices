@@ -16,7 +16,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>course</module>
+		<module>cache</module>
 		<module>core</module>
 		<module>discovery</module>
 		<module>gateway</module>

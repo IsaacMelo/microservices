@@ -32,7 +32,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
-import br.com.microservices.core.model.ApplicationUser;
+import br.com.microservices.core.model.auth.User;
 import br.com.microservices.core.property.JwtConfiguration;
 
 @Service
@@ -45,9 +45,9 @@ public class TokenCreator {
     public SignedJWT createSignedJWT(Authentication auth) {
         log.info("Starting to create the signed JWT");
 
-        ApplicationUser applicationUser = (ApplicationUser) auth.getPrincipal();
+        User user = (User) auth.getPrincipal();
 
-        JWTClaimsSet jwtClaimSet = createJWTClaimSet(auth, applicationUser);
+        JWTClaimsSet jwtClaimSet = createJWTClaimSet(auth, user);
 
         KeyPair rsaKeys = generateKeyPair();
 
@@ -77,16 +77,16 @@ public class TokenCreator {
 
     }
 
-    private JWTClaimsSet createJWTClaimSet(Authentication auth, ApplicationUser applicationUser) {
-        log.info("Creating the JwtClaimSet Object for '{}'", applicationUser);
+    private JWTClaimsSet createJWTClaimSet(Authentication auth, User user) {
+        log.info("Creating the JwtClaimSet Object for '{}'", user);
 
         return new JWTClaimsSet.Builder()
-                .subject(applicationUser.getUsername())
+                .subject(user.getUsername())
                 .claim("authorities", auth.getAuthorities()
                         .stream()
                         .map(GrantedAuthority::getAuthority)
                         .collect(toList()))
-                .claim("userId", applicationUser.getId())
+                .claim("userId", user.getId())
                 .issuer("http://microservices")
                 .issueTime(new Date())
                 .expirationTime(new Date(System.currentTimeMillis() + (jwtConfiguration.getExpiration() * 1000)))

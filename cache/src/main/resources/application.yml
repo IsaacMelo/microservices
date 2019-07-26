@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 8084
 
 eureka:
   instance:
@@ -9,9 +9,10 @@ eureka:
       defaultZone: http://localhost:8081/eureka/
     register-with-eureka: true
 
+
 spring:
   application:
-    name: configuration
+    name: cache
   jpa:
     show-sql: false
     hibernate:
@@ -19,22 +20,12 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-  profiles:
-    active:
-    - jdbc
-  cloud:
-    config:
-      server:
-        jdbc:
-          sql: select property, value from tb_properties where application=? and profile=? and label=?
-        prefix: /config
   jmx:
     enabled: false
   datasource:
     url: jdbc:mysql://localhost:3306/microservices?allowPublicKeyRetrieval=true&sslMode=DISABLED
     username: root
     password: root
-    
 jwt:
   config:
     type: signed

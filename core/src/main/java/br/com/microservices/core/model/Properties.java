@@ -5,9 +5,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
+@Table(name = "tb_properties")
 public class Properties implements AbstractEntity {
 	private static final long serialVersionUID = -3976190300369241258L;
 
@@ -15,22 +19,27 @@ public class Properties implements AbstractEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@ApiModelProperty(notes = "Nome do modulo", required=true, example= "cache")
 	@NotNull(message = "The field 'application' is mandatory")
 	@Column(nullable = false)
 	private String application;
 
+	@ApiModelProperty(notes = "perfil de configurações", required=true, example= "production")
 	@NotNull(message = "The field 'profile' is mandatory")
 	@Column(nullable = false)
 	private String profile;
 
+	@ApiModelProperty(notes = "Descrição da versão", required=true, example= "latest")
 	@NotNull(message = "The field 'label' is mandatory")
 	@Column(nullable = false)
 	private String label;
 
+	@ApiModelProperty(notes = "Nome do parametro", required=true, example= "boleto.template.net")
 	@NotNull(message = "The field 'property' is mandatory")
 	@Column(nullable = false)
 	private String property;
 
+	@ApiModelProperty(notes = "Valor do parametro", required=true, example= "template_boleto_claro.jasper")
 	private String value;
 
 	@Override

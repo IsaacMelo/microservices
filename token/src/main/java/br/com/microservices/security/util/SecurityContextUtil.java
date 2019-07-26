@@ -14,7 +14,7 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
-import br.com.microservices.core.model.ApplicationUser;
+import br.com.microservices.core.model.auth.User;
 
 public class SecurityContextUtil {
 	private final static Logger log = LoggerFactory.getLogger(SecurityContextUtil.class);
@@ -31,12 +31,12 @@ public class SecurityContextUtil {
 
             List<String> authorities = claims.getStringListClaim("authorities");
 
-            ApplicationUser applicationUser = new ApplicationUser();
-            applicationUser.setId(claims.getLongClaim("userId"));
-            applicationUser.setUsername(username);
-            applicationUser.setRole(String.join(",", authorities));
+            User user = new User();
+            user.setId(claims.getLongClaim("userId"));
+            user.setUsername(username);
+            user.setRole(String.join(",", authorities));
             
-            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(applicationUser, null, createAuthorities(authorities));
+            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user, null, createAuthorities(authorities));
             auth.setDetails(signedJWT.serialize());
 
             SecurityContextHolder.getContext().setAuthentication(auth);

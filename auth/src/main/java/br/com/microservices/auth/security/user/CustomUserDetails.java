@@ -1,7 +1,5 @@
 package br.com.microservices.auth.security.user;
 
-import static org.springframework.security.core.authority.AuthorityUtils.commaSeparatedStringToAuthorityList;
-
 import java.util.Collection;
 
 import javax.validation.constraints.NotNull;
@@ -9,18 +7,26 @@ import javax.validation.constraints.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import br.com.microservices.core.model.ApplicationUser;
+import br.com.microservices.core.model.auth.User;
 
-final class CustomUserDetails extends ApplicationUser implements UserDetails {
+final class CustomUserDetails extends User implements UserDetails {
 	private static final long serialVersionUID = -8188448747803807558L;
+	private Collection<? extends GrantedAuthority> authority;
+	
+	CustomUserDetails(@NotNull User user) {
+		super(user);
+	}
 
-	CustomUserDetails(@NotNull ApplicationUser applicationUser) {
-		super(applicationUser);
+	public CustomUserDetails(User user, Collection<? extends GrantedAuthority> authority) {
+		super(user);
+		this.authority = authority;
+		
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return commaSeparatedStringToAuthorityList("ROLE_" + this.getRole());
+		//return commaSeparatedStringToAuthorityList("ROLE_" + this.getRole());
+		return authority;
 	}
 
 	@Override

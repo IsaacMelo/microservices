@@ -25,7 +25,7 @@ public class TokenConverter {
 	private JwtConfiguration jwtConfiguration;
 
     public String decryptToken(String encryptedToken) throws ParseException, JOSEException {
-        log.debug("Decrypting token");
+        log.info("Decrypting token");
 
         JWEObject jweObject = JWEObject.parse(encryptedToken);
 
@@ -33,7 +33,7 @@ public class TokenConverter {
 
         jweObject.decrypt(directDecrypter);
 
-        log.debug("Token decrypted, returning signed token . . . ");
+        log.info("Token decrypted, returning signed token . . . ");
 
         return jweObject.getPayload().toSignedJWT().serialize();
     }
