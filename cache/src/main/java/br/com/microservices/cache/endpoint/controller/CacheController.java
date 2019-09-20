@@ -47,11 +47,11 @@ public class CacheController {
         return new ResponseEntity<>(cacheService.findById(id), HttpStatus.OK);
     }
     
-    @GetMapping(path = "/template/{template}")
+    @GetMapping(path = "/template")
     @ApiOperation(value = "Template boletos", response = String.class)
-    public String findTemplate(@RequestParam String template) {
+    public String findTemplate() {
 		Environment env = context.getEnvironment();
-		String property = env.getProperty("template.boleto."+template);
+		String property = env.getProperty("template.boleto.net");
 		
         return property;
     }
